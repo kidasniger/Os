@@ -7,11 +7,6 @@ locales
 console-setup
 keyboard-configuration
 # --- Bureau XFCE ---
-xfce4
-xfce4-goodies
-lightdm
-lightdm-gtk-greeter
-network-manager-gnome
 gvfs-backends
 xdg-user-dirs
 dbus-x11
@@ -25,16 +20,9 @@ system-config-printer
 # --- Applications ---
 firefox-esr
 firefox-esr-l10n-fr
-libreoffice
-libreoffice-l10n-fr
-libreoffice-gtk3
 vlc
-gimp
-synaptic
 file-roller
-mousepad
 # --- Apparence ---
-arc-theme
 papirus-icon-theme
 fonts-noto
 fonts-noto-color-emoji
@@ -57,3 +45,11 @@ grub-efi-amd64-bin
 grub-efi-amd64-signed
 shim-signed
 efibootmgr
+kde-plasma-desktop
+sddm
+plasma-nm
+plasma-pa
+qt5-style-kvantum
+breeze-gtk-theme
+plymouth
+plymouth-themes
