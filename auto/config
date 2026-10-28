@@ -1,0 +1,17 @@
+#!/bin/sh
+set -e
+lb config noauto \
+  --mode debian \
+  --distribution bookworm \
+  --architectures amd64 \
+  --archive-areas "main contrib non-free non-free-firmware" \
+  --binary-images iso-hybrid \
+  --bootloaders "syslinux,grub-efi" \
+  --debian-installer none \
+  --memtest none \
+  --apt-indices false \
+  --iso-application "KIDAS OS" \
+  --iso-publisher "KIDAS" \
+  --iso-volume "KIDAS_OS" \
+  --bootappend-live "boot=live components quiet splash locales=fr_FR.UTF-8 keyboard-layouts=fr timezone=Europe/Paris username=kidas hostname=kidas" \
+  "${@}"

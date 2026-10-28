@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+
+# Identité du système
+cat > /etc/os-release <<OSR
+PRETTY_NAME="KIDAS OS 0.1.0"
+NAME="KIDAS OS"
+VERSION_ID="0.1.0"
+VERSION="0.1.0 (KIDAS Desktop)"
+VERSION_CODENAME=bookworm
+ID=kidas
+ID_LIKE=debian
+HOME_URL="https://github.com/kidasniger/Os"
+OSR
+
+echo "KIDAS OS 0.1.0 \n \l" > /etc/issue
+echo "KIDAS OS 0.1.0" > /etc/issue.net
+
+# Thème par défaut (appliqué aux nouveaux utilisateurs)
+mkdir -p /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml
+cat > /etc/skel/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml <<XS
+<?xml version="1.0" encoding="UTF-8"?>
+<channel name="xsettings" version="1.0">
+  <property name="Net" type="empty">
+    <property name="ThemeName" type="string" value="Arc-Dark"/>
+    <property name="IconThemeName" type="string" value="Papirus-Dark"/>
+  </property>
+</channel>
+XS
+
+# Splash de démarrage
+plymouth-set-default-theme -R spinner 2>/dev/null || true

@@ -1,0 +1,39 @@
+name: Build KIDAS OS ISO
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Libérer de l'espace disque
+        run: |
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android /opt/hostedtoolcache
+          df -h /
+
+      - name: Construire l'ISO (live-build dans Debian)
+        run: |
+          chmod +x auto/* config/hooks/live/*
+          docker run --privileged --rm -v "$PWD":/work -w /work debian:bookworm bash -c "
+            set -e
+            apt-get update
+            apt-get install -y live-build debootstrap squashfs-tools xorriso \
+              syslinux syslinux-common isolinux grub-pc-bin grub-efi-amd64-bin \
+              mtools dosfstools cpio gnupg ca-certificates
+            lb config
+            lb build
+            mv live-image-amd64.hybrid.iso kidas-os-0.1.0-amd64.iso
+          "
+
+      - name: Publier l'ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: kidas-os-iso
+          path: kidas-os-0.1.0-amd64.iso
+          retention-days: 7

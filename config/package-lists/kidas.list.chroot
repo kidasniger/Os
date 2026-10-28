@@ -1,0 +1,55 @@
+# --- Système live ---
+live-boot
+live-config
+live-config-systemd
+sudo
+locales
+console-setup
+keyboard-configuration
+# --- Bureau XFCE ---
+xfce4
+xfce4-goodies
+lightdm
+lightdm-gtk-greeter
+network-manager-gnome
+gvfs-backends
+xdg-user-dirs
+dbus-x11
+# --- Audio / Bluetooth / Impression ---
+pipewire-audio
+pavucontrol
+bluez
+blueman
+cups
+system-config-printer
+# --- Applications ---
+firefox-esr
+firefox-esr-l10n-fr
+libreoffice
+libreoffice-l10n-fr
+libreoffice-gtk3
+vlc
+gimp
+synaptic
+file-roller
+mousepad
+# --- Apparence ---
+arc-theme
+papirus-icon-theme
+fonts-noto
+fonts-noto-color-emoji
+plymouth
+plymouth-themes
+# --- Pilotes / firmwares ---
+firmware-linux
+firmware-linux-nonfree
+firmware-misc-nonfree
+firmware-iwlwifi
+firmware-realtek
+firmware-atheros
+firmware-amd-graphics
+# --- Installeur ---
+calamares
+calamares-settings-debian
+grub-efi-amd64
+grub-pc
