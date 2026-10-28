@@ -51,5 +51,9 @@ firmware-amd-graphics
 # --- Installeur ---
 calamares
 calamares-settings-debian
-grub-efi-amd64
-grub-pc
+grub-common
+grub-pc-bin
+grub-efi-amd64-bin
+grub-efi-amd64-signed
+shim-signed
+efibootmgr
