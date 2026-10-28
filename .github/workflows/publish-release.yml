@@ -1,0 +1,73 @@
+name: Publier la première release KIDAS OS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-release.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Télécharger l'artefact ISO de la compilation validée
+        uses: actions/download-artifact@v4
+        with:
+          name: kidas-os-iso
+          path: dist
+          repository: ${{ github.repository }}
+          run-id: 40664006655
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Vérifier le fichier ISO
+        shell: bash
+        run: |
+          set -euo pipefail
+          ISO="dist/kidas-os-0.1.0-amd64.iso"
+          test -s "$ISO"
+          ls -lh "$ISO"
+          echo "ISO_PATH=$ISO" >> "$GITHUB_ENV"
+          SIZE=$(stat -c%s "$ISO")
+          echo "ISO_SIZE=$SIZE" >> "$GITHUB_ENV"
+
+      - name: Préparer les fichiers de release
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          if [ "$ISO_SIZE" -le 2147483648 ]; then
+            cp "$ISO_PATH" release-assets/kidas-os-0.1.0-amd64.iso
+            cat > release-assets/TELECHARGEMENT.txt <<'EOF'
+          KIDAS OS v0.1.0 — image ISO amd64
+          Si le fichier ISO est fourni directement, vérifiez son intégrité avant utilisation.
+          EOF
+          else
+            split -b 1000M -d -a 2 "$ISO_PATH" release-assets/kidas-os-0.1.0-amd64.iso.part-
+            cat > release-assets/REASSEMBLER-ISO.txt <<'EOF'
+          L'ISO dépasse la limite de taille d'un fichier de release GitHub. Téléchargez toutes les parties kidas-os-0.1.0-amd64.iso.part-00, part-01, etc. dans le même dossier, puis exécutez :
+          cat kidas-os-0.1.0-amd64.iso.part-* > kidas-os-0.1.0-amd64.iso
+          Vérifiez ensuite la taille du fichier obtenu avant de démarrer ou d'installer le système.
+          EOF
+          fi
+          cp release-assets/*.txt release-assets/ 2>/dev/null || true
+          ls -lh release-assets
+
+      - name: Créer la release v0.1.0 et joindre les fichiers
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          if gh release view v0.1.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "La release v0.1.0 existe déjà ; arrêt pour éviter de l'écraser."
+            exit 1
+          fi
+          gh release create v0.1.0 release-assets/* \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "KIDAS OS v0.1.0 — Première version" \
+            --notes "Première version de KIDAS OS, une distribution Linux basée sur Debian 12 avec le bureau XFCE. Image construite par GitHub Actions à partir du commit 26e62c44c94e1503e5fdd0f0c2d0c4a30223f90b. La compilation du 28 octobre 2026 a réussi. Testez l'ISO dans une machine virtuelle avant toute installation sur matériel réel."
